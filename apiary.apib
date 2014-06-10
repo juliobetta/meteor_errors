@@ -1,47 +1,148 @@
 FORMAT: 1A
-HOST: http://www.google.com
+HOST: http://www.datagenno.com
 
-# Notes API
-Notes API is a *short texts saving* service similar to its physical paper presence on your table.
+# Datagenno API
 
-# Group Notes
-Notes related resources of the **Notes API**
+# Group Misc
+Other system resources
 
-## Notes Collection [/notes]
-### List all Notes [GET]
+## Image [/utils/files/images/{id_image}/{size}]
+### Load an image resource [GET]
++ Parameters
+    + id_image (required, number) ... Numeric `id` of the image    
+    + size (required, string, `normal`) ... Image size (normal | thumb)
++ Response 200
+
+
+# Group Session
+Sign in user
+
+## User sign in [/sessions/create.json]
+### Create User Session [POST]
++ Request Create Session (application/json)
+
+        {
+            "username": "username"
+            "password": "password"
+        }
+
+
++ Response 200 (application/json)
+        
+        { "error": false, "message": "SUCCESS" }
+
+
+## User sign out [/sessions/destroy.json]
+### Destroy user session [POST]
+
 + Response 200 (application/json)
 
-        [{
-          "id": 1, "title": "Jogging in park"
-        }, {
-          "id": 2, "title": "Pick-up posters from post-office"
-        }]
+        { "error": false: "message": "SUCCESS" }
 
-### Create a Note [POST]
-+ Request (application/json)
 
-        { "title": "Buy cheese and bread for breakfast." }
+# Group Global Search
+## Search Collection [/search.json]
+### List all Search Results [GET]
++ Response 200 (application/json)
 
-+ Response 201 (application/json)
+        {
+            "syndromes": [{
+                "id_sindrome": "7",
+                "descricao": "DOWN SYNDROME",
+            }],
+            "similar_syndromes": [],
+            "users": [{
+                "type": "2",
+                "city": "Campos dos Goytacazes",
+                "full_name": "Julio",
+                "middle_name": "Bêtta",
+                "last_name": "de Araújo",
+                "username": "juliobetta",
+                "updated_at": "2012-01-26 12:44:02",
+                "country": "Brazil"
+            }],
+            "genes": [{
+                "id_gene": "4",
+                "name": "GLA",
+                "keywords": "alpha galactosidase, GALA",
+                "localization": "Xq22.1",
+                "sequence": "",
+                "proteins": "",
+                "chromossome": "x",
+                "cell_structure": "0",
+                "ncbi_reference": "2717",
+                "diagnostic_test": "",
+                "type": ""
+            }],
+            "glossary": [{
+                "id_translation": "115",
+                "id_glossario": "116",
+                "termo": "Trisomy",
+                "descricao": "tl;dr",
+                "adicional": null
+            }]
+        }
 
-        { "id": 3, "title": "Buy cheese and bread for breakfast." }
 
-## Note [/notes/{id}]
-A single Note object with all its details
+# Group Diseases
+Diseases related resources of the **Datagenno API**
+
+## Diseases Collection [/syndromes.json]
+### List all Diseases [GET]
++ Response 200 (application/json)
+
+        {
+            "syndromes": [{
+                "id_sindrome": 49, "t_descricao": "10Q DUPLICATION SYNDROME"
+            }, {
+                "id_sindrome": 1328, "t_descricao": "11-BETA-HYDROXYSTEROID DEHYDROGENASE"
+            }]
+        }
+
+## Disease [/syndromes/show/{id_sindrome}.json]
+A single Disease object with all its details
+
+The base Disease response has the following relevant attributes:
+
+- **id_sindrome:** Numeric `id` of the Disease to perform action with.
+- **t_descricao:** Name of the Disease
+- **therapy:** Therapy text of the Disease
+- **sindrome_imagem:**  Array of images
+- **major_criteria:** Array of Signs / Symptoms
+
+Each disease has some array values in the response, namely `sindrome_imagem` and `major_criteria`, which has the
+following relevant attributes:
+
+`major_criteria`:
+
+- **id_sinal:** Numeric `id` of the Sign
+- **id_grupo:** Numeric `id` of the Group
+- **grupo:** Name of the Group
+- **sinal:** Name of the Sign
+- **imagens:** List of comma separated image `id`, which will be used to build the URL to request the image (see Misc/Image)
+
+
+`sindrome_imagem`:
+
+- **id_file_thumb:** Numeric `id` of the thumb sized image, which will be used to build the URL to request the image (see Misc/Image)
+- **id_file_normal:** Numeric `id` of the normal sized image, which will be used to build the URL to request the image (see Misc/Image)
+- **sort_order:** Determine the order of the image in the list
+
 
 + Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
-
-### Retrieve a Note [GET]
+    + id_sindrome (required, number, `761`) ... Numeric `id` of the Disease to perform action with.
+    
+### Retrieve a Disease [GET]
 + Response 200 (application/json)
-
-    + Header
-
-            X-My-Header: The Value
 
     + Body
 
-            { "id": 2, "title": "Pick-up posters from post-office" }
-
-### Remove a Note [DELETE]
-+ Response 204
+            { 
+                "data" : { 
+                    "id_sindrome": 761, 
+                    "t_descricao": "FABRY DISEASE", 
+                    "therapy": "tl;dr",
+                    "sindrome_imagem": [],
+                    "major_criteria": []
+                }
+            }
